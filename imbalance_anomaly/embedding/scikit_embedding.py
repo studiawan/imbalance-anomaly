@@ -5,7 +5,8 @@ from keras.preprocessing.sequence import pad_sequences
 
 
 class ScikitEmbedding(object):
-    def __init__(self):
+    def __init__(self, dataset):
+        self.dataset = dataset
         self.glove_file = 'glove.6B.50d.txt'
         self.glove_dictionary = {}
         self.__read_embedding()
@@ -28,12 +29,16 @@ class ScikitEmbedding(object):
                 vectors = np.asarray(values[1:], dtype='float32')
                 self.glove_dictionary[word] = vectors
 
-    @staticmethod
-    def __read_data():
-        with open('', 'rb') as f:
+    def __read_data(self):
+        current_path = \
+            os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'datasets', self.dataset, 'train-test'))
+        train_file = os.path.join(current_path, self.dataset + '.train.pickle')
+        test_file = os.path.join(current_path, self.dataset + '.test.pickle')
+
+        with open(train_file, 'rb') as f:
             train_dict = pickle.load(f)
 
-        with open('', 'rb') as f:
+        with open(test_file, 'rb') as f:
             test_dict = pickle.load(f)
 
         return train_dict, test_dict
@@ -87,4 +92,4 @@ class ScikitEmbedding(object):
 
             test_embedding.append(message_vectors)
 
-        return train_embedding, test_embedding
+        return train_embedding, self.train_label, test_embedding, self.test_label
