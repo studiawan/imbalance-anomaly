@@ -7,15 +7,15 @@ from sklearn.metrics import precision_recall_fscore_support
 from sklearn.metrics import accuracy_score
 from imblearn.over_sampling import RandomOverSampler, ADASYN, SMOTE, SVMSMOTE
 from imblearn.under_sampling import RandomUnderSampler, TomekLinks, NearMiss, InstanceHardnessThreshold
-from imbalance_anomaly.imbalance.sampling import Sampling
 
 
 class ScikitModel(object):
-    def __init__(self, train_data, train_label, test_data, test_label, sampler=None):
+    def __init__(self, train_data, train_label, test_data, test_label, method, sampler):
         self.train_data = train_data
         self.train_label = train_label
         self.test_data = test_data
         self.test_label = test_label
+        self.method = method
         self.sampler = sampler
         self.random_seed = 101
         self.njobs = -1
@@ -48,21 +48,21 @@ class ScikitModel(object):
 
         return sampler
 
-    def __get_classifier(self, method):
+    def __get_classifier(self):
         classifier = None
-        if method == 'logistic-regression':
+        if self.method == 'logistic-regression':
             classifier = LogisticRegression(random_state=self.random_seed, n_jobs=-self.njobs)
 
-        elif method == 'svm':
+        elif self.method == 'svm':
             classifier = LinearSVC(random_state=self.random_seed)
 
-        elif method == 'decision-tree':
+        elif self.method == 'decision-tree':
             classifier = DecisionTreeClassifier(random_state=self.random_seed)
 
-        elif method == 'passive-aggressive':
+        elif self.method == 'passive-aggressive':
             classifier = PassiveAggressiveClassifier(random_state=self.random_seed, n_jobs=self.njobs)
 
-        elif method == 'naive-bayes':
+        elif self.method == 'naive-bayes':
             classifier = GaussianNB()
 
         return classifier
@@ -73,9 +73,9 @@ class ScikitModel(object):
 
         return precision, recall, f1, accuracy
 
-    def run(self, method):
+    def run(self):
         # get classifier and sampler
-        classifier = self.__get_classifier(method)
+        classifier = self.__get_classifier()
         sampler = self.__get_sampler()
 
         if self.sampler is not None:
