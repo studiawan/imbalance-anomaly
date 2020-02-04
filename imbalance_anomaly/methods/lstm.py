@@ -2,12 +2,12 @@ import keras_metrics
 from sklearn.metrics import precision_recall_fscore_support
 from sklearn.metrics import accuracy_score
 from keras.models import Sequential
-from keras.layers import Embedding, SpatialDropout1D, LSTM, Dense
+from keras.layers import Embedding, SpatialDropout1D, LSTM, Dense, Dropout, Conv1D, GlobalMaxPooling1D
 from imblearn.keras import balanced_batch_generator
 from imbalance_anomaly.imbalance.sampling import Sampling
 
 
-class LSTMModel(object):
+class KerasModel(object):
     def __init__(self, x_train, y_train, x_test, y_test, word_index, embedding_matrix, sampler):
         self.x_train = x_train
         self.y_train = y_train
@@ -25,6 +25,8 @@ class LSTMModel(object):
         self.MAX_PAD = 8
         self.GLOVE_DIM = 50
         self.sampling = Sampling(sampler)
+        self.filters = 64
+        self.kernel_size = 5
 
     def __evaluation(self, predicted_label):
         precision, recall, f1, _ = precision_recall_fscore_support(self.y_test, predicted_label, average='macro')
@@ -32,8 +34,8 @@ class LSTMModel(object):
 
         return precision, recall, f1, accuracy
 
-    def train(self):
-        # build model and comple
+    def train_lstm(self):
+        # build model and compile
         embedding_layer = Embedding(len(self.word_index) + 1,
                                     self.GLOVE_DIM,
                                     weights=[self.embedding_matrix],
@@ -41,7 +43,7 @@ class LSTMModel(object):
                                     trainable=False)
         model = Sequential()
         model.add(embedding_layer)
-        model.add(SpatialDropout1D(0.4))
+        model.add(SpatialDropout1D(self.dropout))
         model.add(LSTM(self.units, dropout=self.dropout, recurrent_dropout=self.dropout, activation=self.activation))
         model.add(Dense(2, activation='softmax'))
         model.compile(loss='categorical_crossentropy', optimizer='adam',
@@ -57,6 +59,37 @@ class LSTMModel(object):
         model.fit_generator(generator=training_generator, steps_per_epoch=steps_per_epoch, epochs=self.epochs)
         self.model = model
 
+        print(model.summary())
+
+    def train_cnn(self):
+        # build model and compile
+        embedding_layer = Embedding(len(self.word_index) + 1,
+                                    self.GLOVE_DIM,
+                                    weights=[self.embedding_matrix],
+                                    input_length=self.MAX_PAD,
+                                    trainable=False)
+        model = Sequential()
+        model.add(embedding_layer)
+        model.add(Dropout(self.dropout))
+        model.add(Conv1D(self.filters, self.kernel_size, activation='relu'))
+        model.add(GlobalMaxPooling1D())
+        # model.add(Dropout(self.dropout))
+        model.add(Dense(10, activation='relu'))
+        model.add(Dense(1, activation='sigmoid'))
+        model.compile(optimizer='adam',
+                      loss='binary_crossentropy',
+                      metrics=['accuracy'])
+
+        # imbalance sampling
+        training_generator, steps_per_epoch = \
+            balanced_batch_generator(self.x_train, self.y_train, sampler=self.sampling.get_sampler(),
+                                     batch_size=self.batch_size, random_state=self.random_seed)
+
+        # training
+        # model.fit(self.x_train, self.y_train, batch_size=self.batch_size, epochs=self.epochs)
+        model.fit_generator(generator=training_generator, steps_per_epoch=steps_per_epoch, epochs=self.epochs)
+
+        self.model = model
         print(model.summary())
 
     def test(self):
