@@ -2,7 +2,7 @@ import os
 import sys
 import csv
 from imbalance_anomaly.embedding.keras_embedding import KerasEmbedding
-from imbalance_anomaly.methods.lstm import LSTMModel
+from imbalance_anomaly.methods.keras_methods import KerasModel
 
 
 class Experiment(object):
@@ -31,8 +31,22 @@ class Experiment(object):
         f = open(evaluation_file, 'wt')
         writer = csv.writer(f)
         for sampler in self.sampler:
-            lstm_model = LSTMModel(x_train, y_train, x_test, y_test, word_index, embedding_matrix, sampler)
-            lstm_model.train()
+            lstm_model = KerasModel(x_train, y_train, x_test, y_test, word_index, embedding_matrix, sampler)
+            lstm_model.train_lstm()
+            precision, recall, f1, accuracy = lstm_model.test()
+            writer.writerow([self.dataset, self.method, sampler, precision, recall, f1, accuracy])
+
+        f.close()
+
+    def run_cnn(self):
+        x_train, y_train, x_test, y_test, word_index, embedding_matrix = self.__get_embedding()
+
+        evaluation_file = self.__get_evaluation_file()
+        f = open(evaluation_file, 'wt')
+        writer = csv.writer(f)
+        for sampler in self.sampler:
+            lstm_model = KerasModel(x_train, y_train, x_test, y_test, word_index, embedding_matrix, sampler)
+            lstm_model.train_cnn()
             precision, recall, f1, accuracy = lstm_model.test()
             writer.writerow([self.dataset, self.method, sampler, precision, recall, f1, accuracy])
 
