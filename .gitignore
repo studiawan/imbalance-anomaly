@@ -1,0 +1,5 @@
+__pycache__/
+.idea
+*.egg-info/
+*.pyc
+glove/glove.6B.50d.txt
