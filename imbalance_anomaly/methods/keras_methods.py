@@ -8,13 +8,14 @@ from imbalance_anomaly.imbalance.sampling import Sampling
 
 
 class KerasModel(object):
-    def __init__(self, x_train, y_train, x_test, y_test, word_index, embedding_matrix, sampler):
+    def __init__(self, x_train, y_train, x_test, y_test, word_index, embedding_matrix, sampler_name=''):
         self.x_train = x_train
         self.y_train = y_train
         self.x_test = x_test
         self.y_test = y_test
         self.word_index = word_index
         self.embedding_matrix = embedding_matrix
+        self.sampler_name = sampler_name
         self.model = None
         self.dropout = 0.4
         self.units = 256
@@ -24,7 +25,7 @@ class KerasModel(object):
         self.random_seed = 101
         self.MAX_PAD = 8
         self.GLOVE_DIM = 50
-        self.sampling = Sampling(sampler)
+        self.sampling = Sampling(sampler_name)
         self.filters = 64
         self.kernel_size = 5
 
@@ -49,14 +50,18 @@ class KerasModel(object):
         model.compile(loss='categorical_crossentropy', optimizer='adam',
                       metrics=[keras_metrics.precision(), keras_metrics.recall(), keras_metrics.f1_score(), 'acc'])
 
-        # imbalance sampling
-        training_generator, steps_per_epoch = \
-            balanced_batch_generator(self.x_train, self.y_train, sampler=self.sampling.get_sampler(),
-                                     batch_size=self.batch_size, random_state=self.random_seed)
+        if self.sampler_name != '':
+            # imbalance sampling
+            training_generator, steps_per_epoch = \
+                balanced_batch_generator(self.x_train, self.y_train, sampler=self.sampling.get_sampler(),
+                                         batch_size=self.batch_size, random_state=self.random_seed)
 
-        # training
-        # model.fit(self.x_train, self.y_train, batch_size=self.batch_size, epochs=self.epochs)
-        model.fit_generator(generator=training_generator, steps_per_epoch=steps_per_epoch, epochs=self.epochs)
+            # training
+            model.fit_generator(generator=training_generator, steps_per_epoch=steps_per_epoch, epochs=self.epochs)
+
+        else:
+            model.fit(self.x_train, self.y_train, batch_size=self.batch_size, epochs=self.epochs)
+
         self.model = model
 
         print(model.summary())
@@ -80,14 +85,17 @@ class KerasModel(object):
                       loss='binary_crossentropy',
                       metrics=['accuracy'])
 
-        # imbalance sampling
-        training_generator, steps_per_epoch = \
-            balanced_batch_generator(self.x_train, self.y_train, sampler=self.sampling.get_sampler(),
-                                     batch_size=self.batch_size, random_state=self.random_seed)
+        if self.sampler_name != '':
+            # imbalance sampling
+            training_generator, steps_per_epoch = \
+                balanced_batch_generator(self.x_train, self.y_train, sampler=self.sampling.get_sampler(),
+                                         batch_size=self.batch_size, random_state=self.random_seed)
 
-        # training
-        # model.fit(self.x_train, self.y_train, batch_size=self.batch_size, epochs=self.epochs)
-        model.fit_generator(generator=training_generator, steps_per_epoch=steps_per_epoch, epochs=self.epochs)
+            # training
+            model.fit_generator(generator=training_generator, steps_per_epoch=steps_per_epoch, epochs=self.epochs)
+
+        else:
+            model.fit(self.x_train, self.y_train, batch_size=self.batch_size, epochs=self.epochs)
 
         self.model = model
         print(model.summary())
