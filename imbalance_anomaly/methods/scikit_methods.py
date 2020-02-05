@@ -5,48 +5,21 @@ from sklearn.linear_model import PassiveAggressiveClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import precision_recall_fscore_support
 from sklearn.metrics import accuracy_score
-from imblearn.over_sampling import RandomOverSampler, ADASYN, SMOTE, SVMSMOTE
-from imblearn.under_sampling import RandomUnderSampler, TomekLinks, NearMiss, InstanceHardnessThreshold
+from imbalance_anomaly.imbalance.sampling import Sampling
 
 
 class ScikitModel(object):
-    def __init__(self, train_data, train_label, test_data, test_label, method, sampler):
+    def __init__(self, train_data, train_label, test_data, test_label, method, sampler_name=''):
         self.train_data = train_data
         self.train_label = train_label
         self.test_data = test_data
         self.test_label = test_label
         self.method = method
-        self.sampler = sampler
+        self.sampler_name = sampler_name
         self.random_seed = 101
         self.njobs = -1
-
-    def __get_sampler(self):
-        sampler = None
-        if self.sampler == 'random-over-sampler':
-            sampler = RandomOverSampler(random_state=self.random_seed)
-
-        elif self.sampler == 'adasyn':
-            sampler = ADASYN(random_state=self.random_seed)
-
-        elif self.sampler == 'smote':
-            sampler = SMOTE(random_state=self.random_seed)
-
-        elif self.sampler == 'svm-smote':
-            sampler = SVMSMOTE(random_state=self.random_seed)
-
-        elif self.sampler == 'random-under-sampler':
-            sampler = RandomUnderSampler(random_state=self.random_seed)
-
-        elif self.sampler == 'tomek-links':
-            sampler = TomekLinks()
-
-        elif self.sampler == 'near-miss':
-            sampler = NearMiss()
-
-        elif self.sampler == 'instance-hardness':
-            sampler = InstanceHardnessThreshold(random_state=self.random_seed, n_jobs=self.njobs)
-
-        return sampler
+        self.sampling = Sampling(sampler_name)
+        self.sampler = self.sampling.get_sampler()
 
     def __get_classifier(self):
         classifier = None
@@ -76,11 +49,10 @@ class ScikitModel(object):
     def run(self):
         # get classifier and sampler
         classifier = self.__get_classifier()
-        sampler = self.__get_sampler()
 
-        if self.sampler is not None:
+        if self.sampler_name != '':
             # sample the data
-            train_resample, train_label_resample = sampler.fit_resample(self.train_data, self.train_label)
+            train_resample, train_label_resample = self.sampler.fit_resample(self.train_data, self.train_label)
 
             # run classification
             classifier.fit(train_resample, train_label_resample)
