@@ -3,3 +3,5 @@ __pycache__/
 *.egg-info/
 *.pyc
 glove/glove.6B.50d.txt
+datasets/*/auth.all.pickle
+datasets/*/*.evaluation.csv
