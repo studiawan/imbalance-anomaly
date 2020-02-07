@@ -55,7 +55,7 @@ class Experiment(object):
 
 if __name__ == '__main__':
     dataset_list = ['dfrws-2009', 'hofstede', 'secrepo']
-    method_list = ['logistic-regression', 'svm', 'decision-tree', 'passive-aggressive', 'naive-bayes']
+    method_list = ['lstm', 'cnn']
 
     if len(sys.argv) < 3:
         print('Please input dataset and method name.')
@@ -68,4 +68,9 @@ if __name__ == '__main__':
         dataset_name = sys.argv[1]
         method_name = sys.argv[2]
         experiment = Experiment(dataset_name, method_name)
-        experiment.run_lstm()
+
+        if method_name == 'lstm':
+            experiment.run_lstm()
+
+        elif method_name == 'cnn':
+            experiment.run_cnn()
