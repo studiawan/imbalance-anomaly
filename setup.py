@@ -1,6 +1,6 @@
 from setuptools import setup
 
-setup(name='imbalance-anomaly',
+setup(name='imbalance_anomaly',
       version='0.0.1',
       description='Anomaly detection in imbalance authentication logs.',
       long_description='Anomaly detection in imbalance authentication logs.',
@@ -14,7 +14,7 @@ setup(name='imbalance-anomaly',
       author='Hudan Studiawan',
       author_email='studiawan@gmail.com',
       license='MIT',
-      packages=['imbalance-anomaly'],
+      packages=['imbalance_anomaly'],
       install_requires=[
           'scikit-learn',
           'keras',
