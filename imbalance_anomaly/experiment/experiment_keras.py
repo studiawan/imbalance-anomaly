@@ -10,7 +10,7 @@ class Experiment(object):
         self.dataset = dataset
         self.method = method
         self.sampler = ['random-over-sampler', 'adasyn', 'smote', 'svm-smote',
-                        'random-under-sampler', 'tomek-links', 'near-miss', 'instance-hardness']
+                        'random-under-sampler', 'tomek-links', 'near-miss', 'instance-hardness', '']
 
     def __get_evaluation_file(self):
         current_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'datasets', self.dataset))
@@ -30,6 +30,7 @@ class Experiment(object):
         evaluation_file = self.__get_evaluation_file()
         f = open(evaluation_file, 'wt')
         writer = csv.writer(f)
+
         for sampler in self.sampler:
             lstm_model = KerasModel(x_train, y_train, x_test, y_test, word_index, embedding_matrix, sampler)
             lstm_model.train_lstm()
@@ -44,6 +45,7 @@ class Experiment(object):
         evaluation_file = self.__get_evaluation_file()
         f = open(evaluation_file, 'wt')
         writer = csv.writer(f)
+
         for sampler in self.sampler:
             lstm_model = KerasModel(x_train, y_train, x_test, y_test, word_index, embedding_matrix, sampler)
             lstm_model.train_cnn()
