@@ -45,7 +45,7 @@ class ScikitEmbedding(object):
         data_list = []
         labels = []
         for line_id, properties in data.items():
-            labels[line_id] = properties['label']
+            labels.append(properties['label'])
             data_list.append(properties['message'])
 
         # pad train data
