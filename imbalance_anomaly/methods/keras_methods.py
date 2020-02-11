@@ -33,7 +33,7 @@ class KerasModel(object):
         precision, recall, f1, _ = precision_recall_fscore_support(self.y_test, predicted_label, average='macro')
         accuracy = accuracy_score(self.y_test, predicted_label)
 
-        return precision, recall, f1, accuracy
+        return precision*100, recall*100, f1*100, accuracy*100
 
     def train_lstm(self):
         # build model and compile
