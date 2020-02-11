@@ -16,11 +16,11 @@ setup(name='imbalance_anomaly',
       license='MIT',
       packages=['imbalance_anomaly'],
       install_requires=[
-          'scikit-learn',
-          'keras',
-          'tensorflow-gpu',
-          'keras-metrics',
-          'imbalanced-learn'
+          'scikit-learn==0.22.1',
+          'keras==2.2.4',
+          'tensorflow-gpu==1.12.0',
+          'keras-metrics==1.1.0',
+          'imbalanced-learn==0.6.1'
       ],
       include_package_data=True,
       zip_safe=False)
