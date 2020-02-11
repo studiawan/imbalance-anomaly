@@ -10,7 +10,7 @@ class Experiment(object):
         self.dataset = dataset
         self.method = method
         self.sampler = ['random-over-sampler', 'adasyn', 'smote', 'svm-smote',
-                        'random-under-sampler', 'tomek-links', 'near-miss', 'instance-hardness']
+                        'random-under-sampler', 'tomek-links', 'near-miss', 'instance-hardness', '']
 
     def __get_scikit_embedding(self):
         scikit_embedding = ScikitEmbedding(self.dataset)
@@ -30,6 +30,7 @@ class Experiment(object):
         evaluation_file = self.__get_evaluation_file()
         f = open(evaluation_file, 'wt')
         writer = csv.writer(f)
+
         for sampler in self.sampler:
             method = ScikitModel(train_embedding, train_label, test_embedding, test_label, self.method, sampler)
             precision, recall, f1, accuracy = method.run()
