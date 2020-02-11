@@ -38,7 +38,7 @@ Evaluation of anomaly detection in imbalanced authentication logs.
 
 2. Extract the Glove pre-trained embedding
 
-   `tar -xjvf glove/glove6B.50d.tar.gz --directory glove/`
+   `tar -xzvf glove/glove6B.50d.tar.gz --directory glove/`
 
 ## Running the experiment
 
@@ -62,4 +62,8 @@ Evaluation of anomaly detection in imbalanced authentication logs.
    
    `python imbalance_anomaly/experiment/experiment_keras.py hofstede lstm`
 
-3. The experimental results are located in `imbalance_anomaly/datasets/$DATASET_NAME$/` where `$DATASET_NAME$` is one of the datasets: `dfrws-2009, hosftede, secrepo`. The file name format for experimental results is `$METHOD_NAME$.evaluation.csv`.   
+3. The experimental results are located in `imbalance_anomaly/datasets/$DATASET_NAME$/` where `$DATASET_NAME$` is one of the datasets: `dfrws-2009, hosftede, secrepo`. The file name format for experimental results is `$METHOD_NAME$.evaluation.csv`.
+
+4. Pretty print the csv file of experimental results
+   
+   `column -s, -t datasets/$DATASET_NAME$/$METHOD_NAME$.evaluation.csv`
