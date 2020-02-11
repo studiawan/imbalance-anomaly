@@ -44,7 +44,7 @@ class ScikitModel(object):
         precision, recall, f1, _ = precision_recall_fscore_support(self.test_label, predicted_label, average='macro')
         accuracy = accuracy_score(self.test_label, predicted_label)
 
-        return precision, recall, f1, accuracy
+        return precision*100, recall*100, f1*100, accuracy*100
 
     def run(self):
         # get classifier and sampler
