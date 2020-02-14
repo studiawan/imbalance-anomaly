@@ -5,7 +5,6 @@ import random
 from math import floor
 from keras.preprocessing.sequence import pad_sequences
 from keras.preprocessing.text import Tokenizer
-from keras.utils import to_categorical
 
 
 class KerasEmbedding(object):
@@ -101,7 +100,7 @@ class KerasEmbedding(object):
                 test_data.append(data_pad[index])
                 test_label.append(labels[index])
 
-        return np.asarray(train_data), to_categorical(train_label), np.asarray(test_data), to_categorical(test_label)
+        return train_data, train_label, test_data, test_label
 
     def __get_embedding_matrix(self, word_index):
         # prepare embedding matrix
