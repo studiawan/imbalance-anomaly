@@ -30,8 +30,9 @@ class KerasModel(object):
         self.kernel_size = 5
 
     def __evaluation(self, predicted_label):
-        precision, recall, f1, _ = precision_recall_fscore_support(self.y_test, predicted_label, average='macro')
-        accuracy = accuracy_score(self.y_test, predicted_label)
+        true_label = self.y_test.argmax(axis=-1)
+        precision, recall, f1, _ = precision_recall_fscore_support(true_label, predicted_label, average='macro')
+        accuracy = accuracy_score(true_label, predicted_label)
 
         return precision*100, recall*100, f1*100, accuracy*100
 
@@ -50,6 +51,7 @@ class KerasModel(object):
         model.compile(loss='categorical_crossentropy', optimizer='adam',
                       metrics=[keras_metrics.precision(), keras_metrics.recall(), keras_metrics.f1_score(), 'acc'])
 
+        print('SAMPLER', self.sampler_name)
         if self.sampler_name != '':
             # imbalance sampling
             training_generator, steps_per_epoch = \
@@ -102,7 +104,8 @@ class KerasModel(object):
 
     def test(self):
         # load model + test
-        y_pred = self.model.predict(self.x_test)
+        y_prob = self.model.predict(self.x_test)
+        y_pred = y_prob.argmax(axis=-1)
 
         # evaluation metrics
         precision, recall, f1, accuracy = self.__evaluation(y_pred)
