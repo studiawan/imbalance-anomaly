@@ -101,7 +101,7 @@ class KerasEmbedding(object):
                 test_data.append(data_pad[index])
                 test_label.append(labels[index])
 
-        return train_data, to_categorical(train_label), test_data, to_categorical(test_label)
+        return np.asarray(train_data), to_categorical(train_label), np.asarray(test_data), to_categorical(test_label)
 
     def __get_embedding_matrix(self, word_index):
         # prepare embedding matrix
