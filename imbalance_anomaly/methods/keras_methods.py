@@ -32,9 +32,9 @@ class KerasModel(object):
         self.kernel_size = 5
 
     def __evaluation(self, predicted_label):
-        true_label = self.y_test.argmax(axis=-1)
-        precision, recall, f1, _ = precision_recall_fscore_support(true_label, predicted_label, average='macro')
-        accuracy = accuracy_score(true_label, predicted_label)
+        # true_label = self.y_test.argmax(axis=-1)
+        precision, recall, f1, _ = precision_recall_fscore_support(self.y_test, predicted_label, average='macro')
+        accuracy = accuracy_score(self.y_test, predicted_label)
 
         return precision*100, recall*100, f1*100, accuracy*100
 
@@ -84,10 +84,10 @@ class KerasModel(object):
         model.add(GlobalMaxPooling1D())
         # model.add(Dropout(self.dropout))
         model.add(Dense(10, activation='relu'))
-        model.add(Dense(1, activation='sigmoid'))
+        model.add(Dense(2, activation='softmax'))
         model.compile(optimizer='adam',
                       loss='binary_crossentropy',
-                      metrics=['accuracy'])
+                      metrics=[keras_metrics.precision(), keras_metrics.recall(), keras_metrics.f1_score(), 'acc'])
 
         if self.sampler_name != '':
             # sample the data
@@ -108,7 +108,8 @@ class KerasModel(object):
 
     def test(self):
         # load model + test
-        y_prob = self.model.predict(self.x_test)
+        x_test = np.asarray(self.x_test)
+        y_prob = self.model.predict(x_test)
         y_pred = y_prob.argmax(axis=-1)
 
         # evaluation metrics
