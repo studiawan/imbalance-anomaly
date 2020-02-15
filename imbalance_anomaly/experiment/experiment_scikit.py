@@ -1,7 +1,8 @@
 import csv
 import os
 import sys
-from imbalance_anomaly.embedding.scikit_embedding import ScikitEmbedding
+# from imbalance_anomaly.embedding.scikit_embedding import ScikitEmbedding
+from imbalance_anomaly.embedding.scikit_tfidf import ScikitTfidf
 from imbalance_anomaly.methods.scikit_methods import ScikitModel
 
 
@@ -13,7 +14,8 @@ class Experiment(object):
                         'random-under-sampler', 'tomek-links', 'near-miss', 'instance-hardness', '']
 
     def __get_scikit_embedding(self):
-        scikit_embedding = ScikitEmbedding(self.dataset)
+        # scikit_embedding = ScikitEmbedding(self.dataset)
+        scikit_embedding = ScikitTfidf(self.dataset)
         train_embedding, train_label, test_embedding, test_label = scikit_embedding.get_scikit_embedding()
 
         return train_embedding, train_label, test_embedding, test_label
