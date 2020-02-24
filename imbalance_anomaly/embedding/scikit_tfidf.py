@@ -32,7 +32,7 @@ class ScikitTfidf(object):
         vectorizer = TfidfVectorizer()
         vectors = vectorizer.fit_transform(data)
 
-        return vectors
+        return vectors.toarray()
 
     def __split(self, data_pad, labels):
         # check normal and anomaly
