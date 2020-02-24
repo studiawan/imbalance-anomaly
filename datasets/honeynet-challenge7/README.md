@@ -1,4 +1,4 @@
-## DFRWS 2009 Dataset
+## honeynet-challenge7 Dataset
 
 This directory should contain:
 - Ground truth file: log.all.pickle
