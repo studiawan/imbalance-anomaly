@@ -18,7 +18,7 @@ setup(name='imbalance_anomaly',
       install_requires=[
           'scikit-learn==0.22.1',
           'keras==2.2.4',
-          'tensorflow-gpu==1.12.0',
+          'tensorflow-gpu==1.15.2',
           'keras-metrics==1.1.0',
           'imbalanced-learn==0.6.1'
       ],
