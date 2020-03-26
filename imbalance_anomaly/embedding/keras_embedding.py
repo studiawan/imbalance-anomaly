@@ -31,7 +31,7 @@ class KerasEmbedding(object):
 
     def __read_data(self):
         current_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'datasets', self.dataset))
-        groundtruth_file = os.path.join(current_path, 'auth.all.pickle')
+        groundtruth_file = os.path.join(current_path, 'log.all.pickle')
 
         with open(groundtruth_file, 'rb') as f:
             data = pickle.load(f)
