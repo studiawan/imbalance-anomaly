@@ -56,7 +56,7 @@ class Experiment(object):
 
 
 if __name__ == '__main__':
-    dataset_list = ['dfrws-2009', 'hofstede', 'secrepo']
+    dataset_list = ['casper-rw', 'dfrws-2009', 'honeynet-challenge7']
     method_list = ['lstm', 'cnn']
 
     if len(sys.argv) < 3:
